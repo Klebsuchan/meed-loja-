@@ -1,4 +1,7 @@
-import { useState } from 'react';
+const fs = require('fs');
+let content = fs.readFileSync('src/components/Footer.tsx', 'utf8');
+
+const newFooter = `import { useState } from 'react';
 import { Shield, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -53,6 +56,13 @@ export function Footer() {
               <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-[#dd711c] transition-colors">Wearables</a>
               <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-[#dd711c] transition-colors">Energia</a>
               <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-[#dd711c] transition-colors">Acessórios</a>
+            </div>
+            <div className="flex flex-col gap-4">
+              <h4 className="text-[10px] text-gray-500 uppercase font-bold mb-2 tracking-widest">Suporte</h4>
+              <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-[#dd711c] transition-colors">FAQ</a>
+              <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-[#dd711c] transition-colors">Garantia</a>
+              <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-[#dd711c] transition-colors">Contato</a>
+              <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-[#dd711c] transition-colors">Rastreio</a>
             </div>
             <div className="flex flex-col gap-4">
               <h4 className="text-[10px] text-gray-500 uppercase font-bold mb-2 tracking-widest">Políticas</h4>
@@ -117,3 +127,6 @@ export function Footer() {
     </>
   );
 }
+`;
+
+fs.writeFileSync('src/components/Footer.tsx', newFooter);
