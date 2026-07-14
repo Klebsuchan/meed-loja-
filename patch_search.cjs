@@ -1,7 +1,15 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/components/SearchModal.tsx', 'utf8');
+let content = fs.readFileSync('src/components/ProductCatalog.tsx', 'utf8');
 
-content = content.replace(/React\.MouseEvent/g, 'MouseEvent');
-content = content.replace(/import \{ useState, useEffect, useRef \} from 'react';/, "import { useState, useEffect, useRef, MouseEvent } from 'react';");
+// replace the ProductCard declaration completely to fix the typing issue
+content = content.replace(
+  /function ProductCard\(\{ product, index, onClick \}: \{ product: any; index: number; onClick: \(\) => void; key\?: any \}\)/,
+  'function ProductCard({ product, index, onClick }: { product: any; index: number; onClick: () => void; key?: React.Key })'
+);
 
-fs.writeFileSync('src/components/SearchModal.tsx', content);
+content = content.replace(
+  /import \{ useRef, useState, useEffect \} from 'react';/,
+  "import React, { useRef, useState, useEffect } from 'react';"
+);
+
+fs.writeFileSync('src/components/ProductCatalog.tsx', content);

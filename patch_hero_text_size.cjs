@@ -1,9 +1,9 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/components/ParallaxHero.tsx', 'utf8');
+let content = fs.readFileSync('src/components/Footer.tsx', 'utf8');
 
 content = content.replace(
-  'className="text-5xl sm:text-6xl md:text-[100px] font-black leading-[0.9] tracking-tighter uppercase mb-4"',
-  'className="text-4xl sm:text-6xl md:text-[80px] lg:text-[100px] font-black leading-[0.9] tracking-tighter uppercase mb-4 max-w-full break-words"'
+  '<a href="#admin" className="text-gray-600 hover:text-[#dd711c] transition-colors inline-flex items-center gap-2" title="Área Restrita (Guardião)">',
+  '<a href="#admin" onClick={() => window.scrollTo({ top: 0, behavior: \'smooth\' })} className="text-gray-600 hover:text-[#dd711c] transition-colors inline-flex items-center gap-2" title="Área Restrita (Guardião)">'
 );
 
-fs.writeFileSync('src/components/ParallaxHero.tsx', content);
+fs.writeFileSync('src/components/Footer.tsx', content);
