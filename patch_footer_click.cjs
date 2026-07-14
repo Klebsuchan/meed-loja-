@@ -1,9 +1,9 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/components/Footer.tsx', 'utf8');
+let content = fs.readFileSync('src/App.tsx', 'utf8');
 
 content = content.replace(
-  '<a href="#admin" onClick={(e) => { e.preventDefault(); window.location.hash = \'#admin\'; window.scrollTo({ top: 0, behavior: \'smooth\' }); }}',
-  '<a href="#admin" onClick={() => { setTimeout(() => window.scrollTo({ top: 0, behavior: \'smooth\' }), 100); }}'
+  "  useEffect(() => {\n    const onHashChange = () => setHash(window.location.hash);",
+  "  useEffect(() => {\n    if (window.location.hash === '#admin' || window.location.hash === '#orders') {\n      window.history.replaceState(null, '', window.location.pathname + window.location.search);\n      setHash('');\n    }\n    const onHashChange = () => setHash(window.location.hash);"
 );
 
-fs.writeFileSync('src/components/Footer.tsx', content);
+fs.writeFileSync('src/App.tsx', content);

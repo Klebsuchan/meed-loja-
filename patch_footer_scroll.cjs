@@ -1,9 +1,12 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/components/Footer.tsx', 'utf8');
+let code = fs.readFileSync('firestore.rules', 'utf8');
 
-content = content.replace(
-  '<a href="#admin" className="text-gray-600 hover:text-[#dd711c] transition-colors inline-flex items-center gap-2" title="Área Restrita (Guardião)">',
-  '<a href="#admin" onClick={() => window.scrollTo({ top: 0, behavior: \'smooth\' })} className="text-gray-600 hover:text-[#dd711c] transition-colors inline-flex items-center gap-2" title="Área Restrita (Guardião)">'
-);
+const newRule = `    match /hero_items/{itemId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}`;
 
-fs.writeFileSync('src/components/Footer.tsx', content);
+code = code.replace(/  \}\n\}/, newRule);
+fs.writeFileSync('firestore.rules', code);
