@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { db } from '../lib/firebase';
-import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { Trash2, Plus, Image as ImageIcon, Package } from 'lucide-react';
+import { collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { Trash2, Plus, Edit2, Image as ImageIcon, Package } from 'lucide-react';
 import { useAuth } from '../AuthContext';
 
 export function AdminPanel() {
@@ -12,6 +12,7 @@ export function AdminPanel() {
   const [carts, setCarts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -79,21 +80,44 @@ export function AdminPanel() {
   const handleAddProduct = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const priceNumber = parseFloat(formData.price.replace(',', '.'));
-      await addDoc(collection(db, 'products'), {
+      const priceNumber = parseFloat(formData.price.toString().replace(',', '.'));
+      const productData = {
         name: formData.name,
         description: formData.description,
         price: priceNumber,
         category: formData.category,
         image: formData.image,
         badge: formData.badge,
-        createdAt: serverTimestamp()
-      });
+      };
+
+      if (editingProductId) {
+        await updateDoc(doc(db, 'products', editingProductId), productData);
+      } else {
+        await addDoc(collection(db, 'products'), {
+          ...productData,
+          createdAt: serverTimestamp()
+        });
+      }
       setIsAdding(false);
+      setEditingProductId(null);
       setFormData({ name: '', description: '', price: '', category: 'Fones', image: '', badge: '' });
     } catch (error) {
-      console.error("Error adding product", error);
+      console.error("Error saving product", error);
     }
+  };
+
+  const handleEditProduct = (product: any) => {
+    setFormData({
+      name: product.name,
+      description: product.description,
+      price: product.price?.toString().replace('.', ',') || '',
+      category: product.category,
+      image: product.image,
+      badge: product.badge || ''
+    });
+    setEditingProductId(product.id);
+    setIsAdding(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDeleteProduct = async (id: string) => {
@@ -322,7 +346,7 @@ export function AdminPanel() {
                 <label className="text-xs uppercase tracking-widest text-gray-400 font-bold flex items-center gap-2">
                   <ImageIcon size={16}/> Foto do Produto
                 </label>
-                <input required type="file" accept="image/*" onChange={handleImageChange} className="text-white text-sm" />
+                <input type="file" accept="image/*" required={!editingProductId} onChange={handleImageChange} className="text-white text-sm" />
                 {formData.image && <img src={formData.image} alt="Preview" className="w-24 h-24 object-cover rounded-lg border border-white/20 mt-2" />}
               </div>
 
@@ -339,7 +363,10 @@ export function AdminPanel() {
                   <p className="text-[#dd711c] font-mono font-bold text-sm mt-1">R$ {product.price?.toFixed(2).replace('.', ',')}</p>
                   <p className="text-xs text-gray-400 mt-1">{product.category}</p>
                 </div>
-                <button onClick={() => handleDeleteProduct(product.id)} className="text-red-400 hover:text-red-300 h-fit p-2 shrink-0"><Trash2 size={20}/></button>
+                <div className="flex gap-2 shrink-0 h-fit">
+                  <button onClick={() => handleEditProduct(product)} className="text-blue-400 hover:text-blue-300 p-2"><Edit2 size={20}/></button>
+                  <button onClick={() => handleDeleteProduct(product.id)} className="text-red-400 hover:text-red-300 p-2"><Trash2 size={20}/></button>
+                </div>
               </div>
             ))}
             {products.length === 0 && <p className="text-gray-400 col-span-3">Nenhum produto cadastrado no banco de dados.</p>}
