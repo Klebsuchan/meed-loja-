@@ -1,36 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
-@import "tailwindcss";
-
-@theme {
-  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
-}
-
-body {
-  background-color: #050505;
-  color: #F0F0F0;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Hide scrollbar for cleaner parallax experience */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #050505;
-}
-::-webkit-scrollbar-thumb {
-  background: #1a1a1a;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #dd711c;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
-
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+{
+  "projectId": "gen-lang-client-0312540102",
+  "appId": "1:337794963827:web:8af0e872e448f042960d06",
+  "apiKey": "AIzaSyApbPuhy4zVasFJFfB2L0FmxtZwRpZGosg",
+  "authDomain": "gen-lang-client-0312540102.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-meedlojaonlineom-8b6e36a1-fc68-4e8e-b965-cf840d50f20e",
+  "storageBucket": "gen-lang-client-0312540102.firebasestorage.app",
+  "messagingSenderId": "337794963827",
+  "measurementId": "",
+  "oAuthClientId": "337794963827-3refs3qjdibmhvkvmjv76pl3t6ecqgh8.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
 }

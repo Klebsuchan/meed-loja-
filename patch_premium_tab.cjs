@@ -1,9 +1,13 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/components/ParallaxHero.tsx', 'utf8');
+let code = fs.readFileSync('src/components/AdminPanel.tsx', 'utf8');
 
-content = content.replace(
-  'className="text-5xl sm:text-6xl md:text-[100px] font-black leading-[0.9] tracking-tighter uppercase mb-4"',
-  'className="text-4xl sm:text-6xl md:text-[80px] lg:text-[100px] font-black leading-[0.9] tracking-tighter uppercase mb-4 max-w-full break-words"'
-);
+const tabHtml = `          <button 
+            onClick={() => { setActiveTab('premium'); setIsAdding(false); }} 
+            className={\`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors \${activeTab === 'premium' ? 'bg-[#dd711c] text-white' : 'text-gray-400 hover:text-white'}\`}
+          >
+            Coleção Premium
+          </button>
+`;
 
-fs.writeFileSync('src/components/ParallaxHero.tsx', content);
+code = code.replace(/<button[^>]+>\s*Marketing\s*<\/button>/, match => match + '\n' + tabHtml);
+fs.writeFileSync('src/components/AdminPanel.tsx', code);

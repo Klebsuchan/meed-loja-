@@ -1,27 +1,58 @@
 const fs = require('fs');
-let code = fs.readFileSync('src/components/ParallaxHero.tsx', 'utf8');
+let code = fs.readFileSync('src/components/AdminPanel.tsx', 'utf8');
 
-const newUseEffect = `  useEffect(() => {
-    const q = query(collection(db, 'hero_items'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const items = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          color: "from-orange-600 to-amber-600",
-          glow: "shadow-[0_0_80px_rgba(221,113,28,0.4)]"
-        };
-      });
-      
-      if (items.length > 0) {
-        setHeroItems(items);
+const methods = `
+  const handlePremiumImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPremiumFormData({ ...premiumFormData, image: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddPremiumItem = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const itemData = {
+        title: premiumFormData.title,
+        subtitle: premiumFormData.subtitle,
+        price: premiumFormData.price,
+        image: premiumFormData.image,
+      };
+
+      if (editingProductId) {
+        await updateDoc(doc(db, 'hero_items', editingProductId), itemData);
       } else {
-        setHeroItems(fallbackHeroItems);
+        await addDoc(collection(db, 'hero_items'), { ...itemData, createdAt: serverTimestamp() });
       }
-    });
-    return () => unsubscribe();
-  }, []);`;
 
-code = code.replace(/  useEffect\(\(\) => \{\n    const q = query\(collection\(db, 'products'\)[\s\S]*?  \}, \[\]\);/, newUseEffect);
-fs.writeFileSync('src/components/ParallaxHero.tsx', code);
+      setPremiumFormData({ title: '', subtitle: '', price: '', image: '' });
+      setIsAdding(false);
+      setEditingProductId(null);
+    } catch (error) {
+      console.error("Error saving premium item:", error);
+    }
+  };
+
+  const handleEditPremiumItem = (item: any) => {
+    setPremiumFormData({
+      title: item.title || '',
+      subtitle: item.subtitle || '',
+      price: item.price || '',
+      image: item.image || ''
+    });
+    setEditingProductId(item.id);
+    setIsAdding(true);
+  };
+
+  const handleDeletePremiumItem = async (id: string) => {
+    await deleteDoc(doc(db, 'hero_items', id));
+  };
+`;
+
+code = code.replace(/const handleDeleteOrder =/, methods + '\n  const handleDeleteOrder =');
+
+fs.writeFileSync('src/components/AdminPanel.tsx', code);

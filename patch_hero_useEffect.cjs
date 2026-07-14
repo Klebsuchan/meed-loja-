@@ -1,23 +1,44 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/components/Footer.tsx', 'utf8');
+let content = fs.readFileSync('src/components/ParallaxHero.tsx', 'utf8');
 
-// Remove from the bottom right
-content = content.replace(
-  '<a href="#admin" className="text-gray-600 hover:text-[#dd711c] transition-colors flex items-center gap-2" title="Área Restrita (Guardião)">\n            <Shield size={14} />\n          </a>',
-  ''
-);
+const regex = /useEffect\(\(\) => \{\n    const q = query\([\s\S]*?\}, \[\]\);/;
 
-// Add to the top left
-content = content.replace(
-  '<p className="text-gray-400 text-sm leading-relaxed border-l-2 border-[#dd711c] pl-4">\n            Acessórios eletrônicos que unem design sofisticado, alta tecnologia e durabilidade para acompanhar o seu estilo de vida.\n          </p>',
-  `<p className="text-gray-400 text-sm leading-relaxed border-l-2 border-[#dd711c] pl-4">
-            Acessórios eletrônicos que unem design sofisticado, alta tecnologia e durabilidade para acompanhar o seu estilo de vida.
-          </p>
-          <div className="mt-2">
-            <a href="#admin" className="text-gray-600 hover:text-[#dd711c] transition-colors inline-flex items-center gap-2" title="Área Restrita (Guardião)">
-              <Shield size={14} />
-            </a>
-          </div>`
-);
+const replacement = `useEffect(() => {
+    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(10));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const prods = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        let rawTitle = data.name || data.title || "Produto";
+        
+        // Encurtando nomes
+        if (rawTitle.toLowerCase().includes('carregamento')) {
+          rawTitle = "Base Dupla";
+        } else if (rawTitle.length > 16) {
+          const words = rawTitle.split(' ');
+          if (words.length > 2) {
+             rawTitle = words.slice(0, 2).join(' ');
+          } else {
+             rawTitle = rawTitle.substring(0, 16);
+          }
+        }
+        
+        return {
+          id: doc.id,
+          ...data,
+          title: rawTitle,
+          subtitle: data.category || "Destaque",
+          price: \`R$ \${Number(data.price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\`,
+          color: "from-orange-600 to-amber-600",
+          glow: "shadow-[0_0_80px_rgba(221,113,28,0.4)]"
+        };
+      });
+      
+      if (prods.length > 0) {
+        setHeroItems(prods.slice(0, 3));
+      }
+    });
+    return () => unsubscribe();
+  }, []);`;
 
-fs.writeFileSync('src/components/Footer.tsx', content);
+content = content.replace(regex, replacement);
+fs.writeFileSync('src/components/ParallaxHero.tsx', content);

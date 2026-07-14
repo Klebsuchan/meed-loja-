@@ -1,13 +1,9 @@
 const fs = require('fs');
-let code = fs.readFileSync('src/components/AdminPanel.tsx', 'utf8');
+let content = fs.readFileSync('firestore.rules', 'utf8');
 
-const tabHtml = `          <button 
-            onClick={() => { setActiveTab('premium'); setIsAdding(false); }} 
-            className={\`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors \${activeTab === 'premium' ? 'bg-[#dd711c] text-white' : 'text-gray-400 hover:text-white'}\`}
-          >
-            Coleção Premium
-          </button>
-`;
+content = content.replace(
+  "return request.auth != null && request.auth.token.email == 'braian.kleber.camargo@gmail.com';",
+  "return request.auth != null && request.auth.token.get('email', '') == 'braian.kleber.camargo@gmail.com';"
+);
 
-code = code.replace(/<button[^>]+>\s*Marketing\s*<\/button>/, match => match + '\n' + tabHtml);
-fs.writeFileSync('src/components/AdminPanel.tsx', code);
+fs.writeFileSync('firestore.rules', content);

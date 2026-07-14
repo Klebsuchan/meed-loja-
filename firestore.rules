@@ -1,12 +1,29 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import firebaseConfig from '../../firebase-applet-config.json';
-
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-
-export const loginWithGoogle = () => signInWithPopup(auth, googleProvider);
-export const logout = () => signOut(auth);
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /orders/{orderId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /carts/{cartId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /mail/{mailId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /hero_items/{itemId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

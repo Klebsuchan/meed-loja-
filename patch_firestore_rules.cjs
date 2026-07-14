@@ -1,9 +1,12 @@
 const fs = require('fs');
-let content = fs.readFileSync('src/components/AdminPanel.tsx', 'utf8');
+let code = fs.readFileSync('firestore.rules', 'utf8');
 
-content = content.replace(
-  "  const [isAuthenticated, setIsAuthenticated] = useState(false);\n  const [password, setPassword] = useState('');",
-  "  const { user, isAdmin, login } = useAuth();\n  const isAuthenticated = isAdmin;"
-);
+const newRule = `    match /hero_items/{itemId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}`;
 
-fs.writeFileSync('src/components/AdminPanel.tsx', content);
+code = code.replace(/  \}\n\}/, newRule);
+fs.writeFileSync('firestore.rules', code);

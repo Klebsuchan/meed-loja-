@@ -1,58 +1,15 @@
 const fs = require('fs');
-let code = fs.readFileSync('src/components/AdminPanel.tsx', 'utf8');
+let content = fs.readFileSync('src/components/ProductCatalog.tsx', 'utf8');
 
-const methods = `
-  const handlePremiumImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPremiumFormData({ ...premiumFormData, image: reader.result as string });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+content = content.replace(
+  'className="relative h-40 md:h-80 bg-[#1a1a1a] overflow-hidden mb-3 md:mb-6 flex items-center justify-center"',
+  'className="relative h-44 sm:h-48 md:h-80 bg-[#1a1a1a] overflow-hidden mb-3 md:mb-6 flex items-center justify-center rounded-xl md:rounded-none"'
+);
 
-  const handleAddPremiumItem = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      const itemData = {
-        title: premiumFormData.title,
-        subtitle: premiumFormData.subtitle,
-        price: premiumFormData.price,
-        image: premiumFormData.image,
-      };
+// also let's check ProductCard wrapper
+content = content.replace(
+  'className="group relative bg-gradient-to-br from-gray-900 to-[#111111] border border-gray-800 hover:border-[#dd711c] transition-colors duration-500 p-2 md:p-4 flex flex-col cursor-pointer"',
+  'className="group relative bg-gradient-to-br from-gray-900 to-[#111111] border border-gray-800 hover:border-[#dd711c] transition-colors duration-500 p-3 md:p-4 flex flex-col cursor-pointer rounded-2xl md:rounded-none"'
+);
 
-      if (editingProductId) {
-        await updateDoc(doc(db, 'hero_items', editingProductId), itemData);
-      } else {
-        await addDoc(collection(db, 'hero_items'), { ...itemData, createdAt: serverTimestamp() });
-      }
-
-      setPremiumFormData({ title: '', subtitle: '', price: '', image: '' });
-      setIsAdding(false);
-      setEditingProductId(null);
-    } catch (error) {
-      console.error("Error saving premium item:", error);
-    }
-  };
-
-  const handleEditPremiumItem = (item: any) => {
-    setPremiumFormData({
-      title: item.title || '',
-      subtitle: item.subtitle || '',
-      price: item.price || '',
-      image: item.image || ''
-    });
-    setEditingProductId(item.id);
-    setIsAdding(true);
-  };
-
-  const handleDeletePremiumItem = async (id: string) => {
-    await deleteDoc(doc(db, 'hero_items', id));
-  };
-`;
-
-code = code.replace(/const handleDeleteOrder =/, methods + '\n  const handleDeleteOrder =');
-
-fs.writeFileSync('src/components/AdminPanel.tsx', code);
+fs.writeFileSync('src/components/ProductCatalog.tsx', content);
