@@ -35,7 +35,7 @@ export function Header({ onSearchClick }: { onSearchClick: () => void }) {
           <a href="#" className="flex items-center space-x-3 group cursor-pointer">
             <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-full border border-[#dd711c]/30">
               <img
-                src="/logomeednovo.png"
+                src="/logomed.png"
                 alt="Meed Loja Online Logo"
                 className="h-full w-full object-cover"
                 onError={(e) => {

@@ -31,7 +31,7 @@ export function Footer() {
           <div className="flex flex-col gap-6 max-w-sm">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-full border border-[#dd711c]/30">
-                <img src="/logomeednovo.png" alt="Meed Loja Online Logo" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+                <img src="/logomed.png" alt="Meed Loja Online Logo" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
                 <div className="hidden text-xs font-bold text-[#dd711c]">M</div>
               </div>
               <span className="text-xl font-bold tracking-widest uppercase text-white">Meed Loja Online</span>
