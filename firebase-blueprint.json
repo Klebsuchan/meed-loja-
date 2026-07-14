@@ -1,0 +1,36 @@
+{
+  "projectInfo": {
+    "name": "Meed Loja Online",
+    "description": "E-commerce platform with products and orders"
+  },
+  "database": {
+    "collections": {
+      "products": {
+        "description": "Store products available for sale",
+        "documentId": "auto-generated",
+        "fields": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price": { "type": "number" },
+          "category": { "type": "string" },
+          "image": { "type": "string" },
+          "createdAt": { "type": "timestamp" }
+        }
+      },
+      "orders": {
+        "description": "User orders",
+        "documentId": "auto-generated",
+        "fields": {
+          "userId": { "type": "string" },
+          "userEmail": { "type": "string" },
+          "customerName": { "type": "string" },
+          "cpf": { "type": "string" },
+          "address": { "type": "string" },
+          "items": { "type": "array", "items": { "type": "map" } },
+          "total": { "type": "number" },
+          "createdAt": { "type": "timestamp" }
+        }
+      }
+    }
+  }
+}
