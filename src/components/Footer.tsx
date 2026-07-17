@@ -30,8 +30,8 @@ export function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
           <div className="flex flex-col gap-6 max-w-sm">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-full border border-[#dd711c]/30">
-                <img src="/logomeed.png" alt="Meed Loja Online Logo" className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
+              <div className="h-10 md:h-12 flex items-center justify-center">
+                <img src="/logomeed.png" alt="Meed Loja Online Logo" className="h-full w-auto object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }} />
                 <div className="hidden text-xs font-bold text-[#dd711c]">M</div>
               </div>
               <span className="text-xl font-bold tracking-widest uppercase text-white">Meed Loja Online</span>

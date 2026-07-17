@@ -33,11 +33,11 @@ export function Header({ onSearchClick }: { onSearchClick: () => void }) {
         >
           <div className="max-w-7xl mx-auto px-4 md:px-12 flex items-center justify-between">
           <a href="#" className="flex items-center space-x-3 group cursor-pointer">
-            <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-full border border-[#dd711c]/30">
+            <div className="h-10 md:h-12 flex items-center justify-center">
               <img
                 src="/logomeed.png"
                 alt="Meed Loja Online Logo"
-                className="h-full w-full object-cover"
+                className="h-full w-auto object-contain"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   e.currentTarget.nextElementSibling?.classList.remove('hidden');
