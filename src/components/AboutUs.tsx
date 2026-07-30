@@ -15,7 +15,7 @@ export function AboutUs() {
           </p>
         </div>
         <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden border border-white/10 group">
-          <img 
+          <img loading="lazy" 
             src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800" 
             alt="Nosso Estoque" 
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 

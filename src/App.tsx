@@ -1,25 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Header } from './components/Header';
 import { ParallaxHero } from './components/ParallaxHero';
 import { ProductCatalog } from './components/ProductCatalog';
-import { FAQ } from './components/FAQ';
 import { TopBar } from './components/TopBar';
-import { AboutUs } from './components/AboutUs';
-import { Testimonials } from './components/Testimonials';
 import { Footer } from './components/Footer';
-import { ProductModal } from './components/ProductModal';
 import { AnimatePresence } from 'motion/react';
 import { CartProvider } from './CartContext';
-import { CartSidebar } from './components/CartSidebar';
-import { SearchModal } from './components/SearchModal';
-import { GlobalParallaxBackground } from './components/GlobalParallaxBackground';
 import { ToastContainer } from './components/ToastContainer';
-import { CookieBanner } from './components/CookieBanner';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { AdminPanel } from './components/AdminPanel';
-import { UserOrders } from './components/UserOrders';
 import { useAuth } from './AuthContext';
-import { PromoPopup } from './components/PromoPopup';
+
+// Lazy load non-critical components to optimize for ultra-fast loading
+const AdminPanel = lazy(() => import('./components/AdminPanel').then(m => ({ default: m.AdminPanel })));
+const UserOrders = lazy(() => import('./components/UserOrders').then(m => ({ default: m.UserOrders })));
+const ProductModal = lazy(() => import('./components/ProductModal').then(m => ({ default: m.ProductModal })));
+const SearchModal = lazy(() => import('./components/SearchModal').then(m => ({ default: m.SearchModal })));
+const CartSidebar = lazy(() => import('./components/CartSidebar').then(m => ({ default: m.CartSidebar })));
+const GlobalParallaxBackground = lazy(() => import('./components/GlobalParallaxBackground').then(m => ({ default: m.GlobalParallaxBackground })));
+const CookieBanner = lazy(() => import('./components/CookieBanner').then(m => ({ default: m.CookieBanner })));
+const PromoPopup = lazy(() => import('./components/PromoPopup').then(m => ({ default: m.PromoPopup })));
+const AboutUs = lazy(() => import('./components/AboutUs').then(m => ({ default: m.AboutUs })));
+const Testimonials = lazy(() => import('./components/Testimonials').then(m => ({ default: m.Testimonials })));
+const FAQ = lazy(() => import('./components/FAQ').then(m => ({ default: m.FAQ })));
 
 export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -40,43 +42,50 @@ export default function App() {
   return (
     <CartProvider>
       <div className="min-h-screen bg-[#050505] text-[#F0F0F0] selection:bg-[#dd711c] selection:text-white flex flex-col font-sans relative overflow-x-hidden">
-        <GlobalParallaxBackground />
+        <Suspense fallback={null}>
+          <GlobalParallaxBackground />
+        </Suspense>
+        
         <Header onSearchClick={() => setIsSearchOpen(true)} />
+        
         <main className="flex-1 relative z-10 pt-0">
-          {hash === '#admin' ? (
-            <AdminPanel />
-          ) : hash === '#orders' && user && !isAdmin ? (
-            <UserOrders />
-          ) : (
-            <>
-              <ParallaxHero onProductSelect={setSelectedProduct} />
-              <ProductCatalog onProductSelect={setSelectedProduct} />
-              <AboutUs />
-              <Testimonials />
-              <FAQ />
-            </>
-          )}
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[50vh]"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#dd711c]"></div></div>}>
+            {hash === '#admin' ? (
+              <AdminPanel />
+            ) : hash === '#orders' && user && !isAdmin ? (
+              <UserOrders />
+            ) : (
+              <>
+                <ParallaxHero onProductSelect={setSelectedProduct} />
+                <ProductCatalog onProductSelect={setSelectedProduct} />
+                <AboutUs />
+                <Testimonials />
+                <FAQ />
+              </>
+            )}
+          </Suspense>
         </main>
+        
         <Footer />
         
-        <AnimatePresence>
-          {selectedProduct && (
-            <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
-          )}
-        </AnimatePresence>
-        
-        <CartSidebar />
-        
-        <SearchModal 
-          isOpen={isSearchOpen} 
-          onClose={() => setIsSearchOpen(false)} 
-          onProductSelect={setSelectedProduct} 
-        />
+        <Suspense fallback={null}>
+          <AnimatePresence>
+            {selectedProduct && (
+              <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+            )}
+          </AnimatePresence>
+          <CartSidebar />
+          <SearchModal 
+            isOpen={isSearchOpen} 
+            onClose={() => setIsSearchOpen(false)} 
+            onProductSelect={setSelectedProduct} 
+          />
+          <CookieBanner />
+          <PromoPopup />
+        </Suspense>
         
         <ToastContainer />
-        <CookieBanner />
         <FloatingWhatsApp />
-        <PromoPopup />
       </div>
     </CartProvider>
   );

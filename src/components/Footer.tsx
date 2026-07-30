@@ -31,7 +31,7 @@ export function Footer() {
           <div className="flex flex-col gap-6 max-w-sm">
             <div className="flex items-center space-x-3">
               <div className="h-10 md:h-12 flex items-center justify-center">
-                <img src="/logomeed.png" alt="Meed Loja Online Logo" className="h-full w-auto object-contain"  />
+                <img loading="lazy" src="/logomeed.png" alt="Meed Loja Online Logo" className="h-full w-auto object-contain"  />
                 <div className="hidden text-xs font-bold text-[#dd711c]">M</div>
               </div>
               <span className="text-xl font-bold tracking-widest uppercase text-white">Meed Loja Online</span>

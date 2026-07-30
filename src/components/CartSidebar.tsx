@@ -164,7 +164,7 @@ export function CartSidebar() {
                   cart.map(item => (
                     <div key={item.id} className="flex gap-4 bg-white/5 border border-white/5 p-4 rounded-xl relative group">
                       <div className="w-24 h-24 bg-[#1a1a1a] rounded-lg overflow-hidden shrink-0 border border-white/5">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-all duration-300" />
+                        <img loading="lazy" src={item.image} alt={item.name} className="w-full h-full object-cover transition-all duration-300" />
                       </div>
                       <div className="flex flex-col flex-1 py-1">
                         <h4 className="text-white font-bold text-sm uppercase tracking-tight mb-1 line-clamp-2">{item.name}</h4>
@@ -172,9 +172,9 @@ export function CartSidebar() {
                         
                         <div className="mt-auto flex items-center justify-between">
                           <div className="flex items-center space-x-3 bg-black/40 rounded-full px-2 py-1 border border-white/5">
-                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="text-gray-400 hover:text-white p-1"><Minus size={14} /></button>
+                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="text-gray-400 hover:text-white p-2 w-8 h-8 flex items-center justify-center rounded-full"><Minus size={14} /></button>
                             <span className="text-white text-xs font-mono w-4 text-center">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="text-gray-400 hover:text-white p-1"><Plus size={14} /></button>
+                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="text-gray-400 hover:text-white p-2 w-8 h-8 flex items-center justify-center rounded-full"><Plus size={14} /></button>
                           </div>
                           <button onClick={() => removeFromCart(item.id)} className="text-gray-500 hover:text-red-400 transition-colors p-2 rounded-full hover:bg-white/5">
                             <Trash2 size={16} />

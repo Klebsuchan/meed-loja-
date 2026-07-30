@@ -119,7 +119,7 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
                           className="flex items-center gap-4 p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors group/item"
                         >
                           <div className="w-16 h-16 bg-[#1a1a1a] rounded-md overflow-hidden shrink-0 border border-white/5">
-                            <img src={product.image || '/logomeed.png'} alt={product.name} className="w-full h-full object-cover transition-all" />
+                            <img loading="lazy" src={product.image || '/logomeed.png'} alt={product.name} className="w-full h-full object-cover transition-all" />
                           </div>
                           <div className="flex flex-col flex-1">
                             <span className="text-[10px] text-[#dd711c] font-bold uppercase tracking-widest mb-1">{product.category}</span>

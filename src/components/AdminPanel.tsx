@@ -271,7 +271,7 @@ export function AdminPanel() {
                   <div style="margin: 20px 0;">
                     ${cartData.items.map((item: any) => `
                       <div style="margin-bottom: 10px;">
-                        <img src="${item.image}" width="100" style="border-radius: 8px;" />
+                        <img loading="lazy" src="${item.image}" width="100" style="border-radius: 8px;" />
                         <p>${item.quantity}x ${item.name} - ${item.price}</p>
                       </div>
                     `).join('')}
@@ -405,7 +405,7 @@ export function AdminPanel() {
                   <ImageIcon size={16}/> Foto do Produto
                 </label>
                 <input type="file" accept="image/*" required={!editingProductId} onChange={handleImageChange} className="text-white text-sm" />
-                {formData.image && <img src={formData.image} alt="Preview" className="w-24 h-24 object-cover rounded-lg border border-white/20 mt-2" />}
+                {formData.image && <img loading="lazy" src={formData.image} alt="Preview" className="w-24 h-24 object-cover rounded-lg border border-white/20 mt-2" />}
               </div>
 
               <button type="submit" className="bg-[#dd711c] text-white py-3 rounded-lg font-bold uppercase tracking-widest mt-4">Salvar Produto</button>
@@ -415,7 +415,7 @@ export function AdminPanel() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {products.map(product => (
               <div key={product.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex gap-4">
-                <img src={product.image || '/logomeed.png'} alt={product.name} className="w-20 h-20 object-cover rounded-lg bg-black shrink-0" />
+                <img loading="lazy" src={product.image || '/logomeed.png'} alt={product.name} className="w-20 h-20 object-cover rounded-lg bg-black shrink-0" />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-white text-sm leading-tight truncate">{product.name}</h3>
                   <p className="text-[#dd711c] font-mono font-bold text-sm mt-1">R$ {product.price?.toFixed(2).replace('.', ',')}</p>
@@ -546,7 +546,7 @@ export function AdminPanel() {
                   <ImageIcon size={16}/> Imagem do Destaque (Fundo Transparente Recomendado)
                 </label>
                 <input type="file" accept="image/*" required={!editingProductId} onChange={handlePremiumImageChange} className="text-white text-sm" />
-                {premiumFormData.image && <img src={premiumFormData.image} alt="Preview" className="w-32 h-32 object-contain bg-black/50 rounded-lg border border-white/20 mt-2" />}
+                {premiumFormData.image && <img loading="lazy" src={premiumFormData.image} alt="Preview" className="w-32 h-32 object-contain bg-black/50 rounded-lg border border-white/20 mt-2" />}
               </div>
 
               <button type="submit" className="bg-[#dd711c] text-white py-3 rounded-lg font-bold uppercase tracking-widest mt-4">Salvar Destaque</button>
@@ -557,7 +557,7 @@ export function AdminPanel() {
             {premiumItems.map(item => (
               <div key={item.id} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col sm:flex-row gap-6">
                 <div className="w-full sm:w-32 h-32 bg-black/50 rounded-xl overflow-hidden shrink-0 border border-white/5">
-                  {item.image ? <img src={item.image} alt={item.title} className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center text-gray-500"><ImageIcon size={32}/></div>}
+                  {item.image ? <img loading="lazy" src={item.image} alt={item.title} className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center text-gray-500"><ImageIcon size={32}/></div>}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-black text-white uppercase">{item.title}</h3>

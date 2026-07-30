@@ -75,7 +75,7 @@ export function ProductModal({ product, onClose }: { product: any, onClose: () =
                     onClick={() => setCurrentImageIdx(idx)}
                     className={`relative w-16 h-16 rounded-xl overflow-hidden shrink-0 border-2 transition-all ${idx === currentImageIdx ? 'border-[#dd711c] scale-105 shadow-lg shadow-[#dd711c]/20' : 'border-transparent opacity-40 hover:opacity-100'}`}
                   >
-                    <img src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
+                    <img loading="lazy" src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

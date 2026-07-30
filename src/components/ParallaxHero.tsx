@@ -153,7 +153,7 @@ export function ParallaxHero({ onProductSelect }: { onProductSelect: (product: a
                 onClick={() => onProductSelect(currentItem)}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${currentItem.color} mix-blend-overlay opacity-40 z-10`}></div>
-                <img src={currentItem.image} alt={currentItem.title} className="w-full h-full object-cover object-center scale-110" />
+                <img fetchPriority="high" src={currentItem.image} alt={currentItem.title} className="w-full h-full object-cover object-center scale-110" />
               </div>
               
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full max-w-[280px] sm:max-w-[320px] md:max-w-none md:w-full px-2 md:px-4 border-t border-white/10 pt-4 pb-6 md:pb-4 gap-4">

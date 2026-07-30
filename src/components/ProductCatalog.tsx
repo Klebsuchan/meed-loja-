@@ -134,6 +134,7 @@ function ProductCard({ product, index, onClick }: { product: any; index: number;
           style={{ y: imgY }}
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
+          loading="lazy" 
           src={product.image || '/logomeed.png'}
           alt={product.name}
           className="w-full h-[130%] object-cover opacity-80 group-hover:opacity-100 transition-opacity"
