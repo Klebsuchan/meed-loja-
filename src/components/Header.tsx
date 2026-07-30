@@ -38,10 +38,7 @@ export function Header({ onSearchClick }: { onSearchClick: () => void }) {
                 src="/logomeed.png"
                 alt="Meed Loja Online Logo"
                 className="h-full w-auto object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                }}
+                
               />
               <div className="hidden text-xs font-bold text-[#dd711c]">M</div>
             </div>

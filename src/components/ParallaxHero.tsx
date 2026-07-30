@@ -4,48 +4,24 @@ import { Headphones, Watch, Speaker, BatteryCharging, ChevronLeft, ChevronRight 
 import { db } from '../lib/firebase';
 import { collection, query, onSnapshot, orderBy, limit } from 'firebase/firestore';
 
-const fallbackHeroItems = [
-  {
-    id: 1,
-    title: "Quantum X-90",
-    subtitle: "Headphones Pro",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=1200",
-    price: "R$ 499,00",
-    color: "from-orange-600 to-amber-600",
-    glow: "shadow-[0_0_80px_rgba(221,113,28,0.4)]"
-  },
-  {
-    id: 2,
-    title: "Meed Watch Series",
-    subtitle: "Conectividade Total",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1200",
-    price: "R$ 799,00",
-    color: "from-orange-600 to-red-600",
-    glow: "shadow-[0_0_80px_rgba(221,113,28,0.4)]"
-  },
-  {
-    id: 3,
-    title: "Sound360 Ultra",
-    subtitle: "Som Imersivo",
-    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=1200",
-    price: "R$ 299,00",
-    color: "from-blue-600 to-cyan-600",
-    glow: "shadow-[0_0_80px_rgba(221,113,28,0.4)]"
-  }
-];
+
 
 export function ParallaxHero({ onProductSelect }: { onProductSelect: (product: any) => void }) {
   const ref = useRef(null);
-  const [heroItems, setHeroItems] = useState<any[]>(fallbackHeroItems);
+  const [heroItems, setHeroItems] = useState<any[]>([]);
 
   useEffect(() => {
-    const q = query(collection(db, 'hero_items'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(3));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const items = querySnapshot.docs.map(doc => {
         const data = doc.data();
         return {
           id: doc.id,
+          title: data.name,
+          subtitle: data.category || '',
           ...data,
+          price: typeof data.price === 'string' ? (data.price.includes('R$') ? data.price : `R$ ${data.price}`) : `R$ ${Number(data.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          image: data.image || '/logomeed.png',
           color: "from-orange-600 to-amber-600",
           glow: "shadow-[0_0_80px_rgba(221,113,28,0.4)]"
         };
@@ -54,7 +30,7 @@ export function ParallaxHero({ onProductSelect }: { onProductSelect: (product: a
       if (items.length > 0) {
         setHeroItems(items);
       } else {
-        setHeroItems(fallbackHeroItems);
+        // setHeroItems(fallbackHeroItems);
       }
     });
     return () => unsubscribe();
@@ -89,7 +65,7 @@ export function ParallaxHero({ onProductSelect }: { onProductSelect: (product: a
   const float4Y = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
 
   const currentItem = heroItems[currentIndex] || heroItems[0];
-  if (!currentItem) return null;
+  if (!currentItem) return <section ref={ref} className="relative min-h-[100dvh] w-full bg-[#050505]"></section>;
 
   return (
     <section ref={ref} className="relative min-h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-[#050505] pt-32 pb-24 md:pt-32 md:pb-12">
@@ -180,12 +156,14 @@ export function ParallaxHero({ onProductSelect }: { onProductSelect: (product: a
                 <img src={currentItem.image} alt={currentItem.title} className="w-full h-full object-cover object-center scale-110" />
               </div>
               
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full max-w-[280px] sm:max-w-[320px] md:max-w-none md:w-full px-2 md:px-4 border-t border-white/10 pt-4 pb-6 md:pb-4 gap-2 md:gap-0">
-                <div className="flex flex-col text-left">
-                  <span className="text-lg md:text-2xl font-black uppercase tracking-tight text-white leading-tight">{currentItem.title}</span>
-                  <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mt-1">{currentItem.subtitle}</span>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full max-w-[280px] sm:max-w-[320px] md:max-w-none md:w-full px-2 md:px-4 border-t border-white/10 pt-4 pb-6 md:pb-4 gap-4">
+                <div className="flex flex-col text-left flex-1 min-w-0 pr-2">
+                  <span className="text-lg md:text-2xl font-black uppercase tracking-tight text-white leading-tight truncate block w-full">{currentItem.title}</span>
+                  <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mt-1 truncate block w-full">{currentItem.subtitle}</span>
                 </div>
-                <span className="text-lg md:text-xl font-mono font-black text-[#dd711c]">{currentItem.price}</span>
+                <div className="shrink-0 flex items-center justify-start md:justify-end mt-2 md:mt-0 bg-black/40 px-4 py-2 rounded-xl border border-[#dd711c]/30 backdrop-blur-md">
+                  <span className="text-base md:text-xl font-mono font-black text-[#dd711c] whitespace-nowrap tracking-tighter">{currentItem.price}</span>
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>

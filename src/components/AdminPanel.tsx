@@ -19,7 +19,7 @@ export function AdminPanel() {
     name: '',
     description: '',
     price: '',
-    category: 'Fones',
+    category: 'Áudio',
     image: '',
     badge: ''
   });
@@ -108,7 +108,7 @@ export function AdminPanel() {
       }
       setIsAdding(false);
       setEditingProductId(null);
-      setFormData({ name: '', description: '', price: '', category: 'Fones', image: '', badge: '' });
+      setFormData({ name: '', description: '', price: '', category: 'Áudio', image: '', badge: '' });
     } catch (error) {
       console.error("Error saving product", error);
     }
@@ -390,7 +390,6 @@ export function AdminPanel() {
                 <input required placeholder="Nome do Produto" className="bg-white/5 border border-white/10 p-3 rounded-lg text-white" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
                 <input required placeholder="Preço (ex: 299,90)" className="bg-white/5 border border-white/10 p-3 rounded-lg text-white" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
                 <select className="bg-[#111111] border border-white/10 p-3 rounded-lg text-white" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
-                  <option value="Fones">Fones</option>
                   <option value="Carregadores">Carregadores</option>
                   <option value="Periféricos">Periféricos</option>
                   <option value="Áudio">Áudio</option>
@@ -416,7 +415,7 @@ export function AdminPanel() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {products.map(product => (
               <div key={product.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex gap-4">
-                <img src={product.image} alt={product.name} className="w-20 h-20 object-cover rounded-lg bg-black shrink-0" />
+                <img src={product.image || '/logomeed.png'} alt={product.name} className="w-20 h-20 object-cover rounded-lg bg-black shrink-0" />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-white text-sm leading-tight truncate">{product.name}</h3>
                   <p className="text-[#dd711c] font-mono font-bold text-sm mt-1">R$ {product.price?.toFixed(2).replace('.', ',')}</p>

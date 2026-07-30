@@ -19,7 +19,7 @@ export function ProductCatalog({ onProductSelect }: { onProductSelect: (product:
         return {
           id: doc.id,
           ...data,
-          price: `R$ ${Number(data.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          price: typeof data.price === 'string' ? (data.price.includes('R$') ? data.price : `R$ ${data.price}`) : `R$ ${Number(data.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         };
       });
       setProducts(prods);
@@ -37,7 +37,7 @@ export function ProductCatalog({ onProductSelect }: { onProductSelect: (product:
     offset: ["start end", "end start"]
   });
 
-  const categories = ['Todos', 'Fones', 'Carregadores', 'Periféricos', 'Áudio', 'Acessórios', 'Eletroportáteis'];
+  const categories = ['Todos', 'Áudio', 'Carregadores', 'Periféricos', 'Acessórios', 'Eletroportáteis'];
   const filteredProducts = selectedCategory === 'Todos' ? products : products.filter(p => p.category === selectedCategory);
 
   // Background text parallax
@@ -134,9 +134,9 @@ function ProductCard({ product, index, onClick }: { product: any; index: number;
           style={{ y: imgY }}
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          src={product.image}
+          src={product.image || '/logomeed.png'}
           alt={product.name}
-          className="w-full h-[130%] object-cover opacity-80 group-hover:opacity-100 transition-opacity mix-blend-luminosity hover:mix-blend-normal"
+          className="w-full h-[130%] object-cover opacity-80 group-hover:opacity-100 transition-opacity"
         />
         <div className="absolute top-2 left-2 md:top-4 md:left-4 border border-[#dd711c] text-[#dd711c] px-2 py-0.5 md:px-4 md:py-1 text-[8px] md:text-[10px] font-bold tracking-widest uppercase bg-black/50 backdrop-blur-md">
           {product.category}

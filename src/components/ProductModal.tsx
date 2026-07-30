@@ -7,7 +7,7 @@ export function ProductModal({ product, onClose }: { product: any, onClose: () =
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
   const { addToCart, setIsCartOpen } = useCart();
 
-  const images = product.images || [product.image];
+  const images = (product.images && product.images.length > 0) ? product.images : (product.image ? [product.image] : ['/logomeed.png']);
 
   const nextImg = () => setCurrentImageIdx((prev) => (prev + 1) % images.length);
   const prevImg = () => setCurrentImageIdx((prev) => (prev - 1 + images.length) % images.length);
@@ -106,7 +106,16 @@ export function ProductModal({ product, onClose }: { product: any, onClose: () =
                 <CreditCard size={18} className="text-[#dd711c] mt-0.5 shrink-0" />
                 <div>
                   <p className="font-bold text-white">Formas de Pagamento</p>
-                  <p className="text-gray-500">Em até 12x sem juros no cartão de crédito ou 10% de desconto no Pix.</p>
+                  <p className="text-gray-500">
+                    {(() => {
+                      const desc = (product.description || "").toLowerCase();
+                      const match = desc.match(/em at[eé] (\d+)x/);
+                      if (match) {
+                        return `Em até ${match[1]}x sem juros no cartão de crédito, à vista no cartão de débito ou Pix.`;
+                      }
+                      return 'À vista no cartão de crédito, à vista no cartão de débito ou Pix.';
+                    })()}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start space-x-3 text-sm text-gray-300">

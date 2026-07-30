@@ -50,7 +50,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setDoc(doc(db, 'carts', user.uid), {
           userId: user.uid,
           email: user.email,
-          items: cart,
+          items: cart.map(item => ({
+            id: item.id || Date.now(),
+            name: item.name || 'Produto',
+            price: item.price || 'R$ 0,00',
+            image: item.image || '/logomeed.png',
+            quantity: item.quantity || 1
+          })),
           updatedAt: serverTimestamp(),
           lastEmailSentAt: null,
           notified: false
@@ -71,7 +77,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (existing) {
         return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
       }
-      return [...prev, { id: product.id, name: product.name || product.title, price: product.price, image: product.image, quantity: 1 }];
+      return [...prev, { 
+        id: product.id || Date.now(), 
+        name: product.name || product.title || 'Produto', 
+        price: product.price || 'R$ 0,00', 
+        image: product.image || '/logomeed.png', 
+        quantity: 1 
+      }];
     });
     
     // Add toast notification

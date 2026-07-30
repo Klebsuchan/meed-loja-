@@ -164,7 +164,7 @@ export function CartSidebar() {
                   cart.map(item => (
                     <div key={item.id} className="flex gap-4 bg-white/5 border border-white/5 p-4 rounded-xl relative group">
                       <div className="w-24 h-24 bg-[#1a1a1a] rounded-lg overflow-hidden shrink-0 border border-white/5">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-300" />
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-all duration-300" />
                       </div>
                       <div className="flex flex-col flex-1 py-1">
                         <h4 className="text-white font-bold text-sm uppercase tracking-tight mb-1 line-clamp-2">{item.name}</h4>

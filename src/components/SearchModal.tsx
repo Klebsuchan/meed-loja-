@@ -1,10 +1,26 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, X, Clock, Trash2 } from 'lucide-react';
 import { useState, useEffect, useRef, MouseEvent } from 'react';
-import { products } from '../data';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: boolean, onClose: () => void, onProductSelect: (product: any) => void }) {
-  const [query, setQuery] = useState('');
+  const [queryInput, setQueryInput] = useState('');
+  const [products, setProducts] = useState<any[]>([]);
+  useEffect(() => {
+    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setProducts(snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          price: typeof data.price === 'string' ? (data.price.includes('R$') ? data.price : `R$ ${data.price}`) : `R$ ${Number(data.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        };
+      }));
+    });
+    return () => unsubscribe();
+  }, []);
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     const saved = localStorage.getItem('recentSearches');
     return saved ? JSON.parse(saved) : [];
@@ -15,7 +31,7 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
-      setQuery('');
+      setQueryInput('');
       const saved = localStorage.getItem('recentSearches');
       if (saved) {
         setRecentSearches(JSON.parse(saved));
@@ -24,8 +40,8 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
   }, [isOpen]);
 
   const handleProductSelect = (product: any) => {
-    if (query.trim() !== '') {
-      const newRecent = [query.trim(), ...recentSearches.filter(s => s !== query.trim())].slice(0, 5);
+    if (queryInput.trim() !== '') {
+      const newRecent = [queryInput.trim(), ...recentSearches.filter(s => s !== queryInput.trim())].slice(0, 5);
       setRecentSearches(newRecent);
       localStorage.setItem('recentSearches', JSON.stringify(newRecent));
     }
@@ -40,12 +56,12 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
     localStorage.setItem('recentSearches', JSON.stringify(newRecent));
   };
 
-  const filteredProducts = query.trim() === '' 
+  const filteredProducts = queryInput.trim() === '' 
     ? [] 
     : products.filter(p => 
-        p.name.toLowerCase().includes(query.toLowerCase()) || 
-        p.category.toLowerCase().includes(query.toLowerCase()) ||
-        (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
+        (p.name || '').toLowerCase().includes(queryInput.toLowerCase()) || 
+        (p.category || '').toLowerCase().includes(queryInput.toLowerCase()) ||
+        (p.description || '').toLowerCase().includes(queryInput.toLowerCase())
       );
 
   return (
@@ -73,8 +89,8 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
                 ref={inputRef}
                 type="text"
                 placeholder="Busque por produtos, categorias..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                value={queryInput}
+                onChange={(e) => setQueryInput(e.target.value)}
                 className="w-full bg-[#0a0a0a] border border-white/20 rounded-full py-5 pl-16 pr-14 text-white text-lg focus:outline-none focus:border-[#dd711c] transition-colors shadow-2xl"
               />
               <button 
@@ -87,7 +103,7 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
 
             {/* Search Results / Recent Searches */}
             <AnimatePresence>
-              {query.trim() !== '' ? (
+              {queryInput.trim() !== '' ? (
                 <motion.div 
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -103,7 +119,7 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
                           className="flex items-center gap-4 p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors group/item"
                         >
                           <div className="w-16 h-16 bg-[#1a1a1a] rounded-md overflow-hidden shrink-0 border border-white/5">
-                            <img src={product.image} alt={product.name} className="w-full h-full object-cover mix-blend-luminosity group-hover/item:mix-blend-normal transition-all" />
+                            <img src={product.image || '/logomeed.png'} alt={product.name} className="w-full h-full object-cover transition-all" />
                           </div>
                           <div className="flex flex-col flex-1">
                             <span className="text-[10px] text-[#dd711c] font-bold uppercase tracking-widest mb-1">{product.category}</span>
@@ -116,7 +132,7 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
                   ) : (
                     <div className="p-10 text-center text-gray-500 font-bold uppercase tracking-widest text-sm flex flex-col items-center justify-center space-y-4">
                       <Search size={48} className="opacity-20" />
-                      <span>Nenhum produto encontrado para "{query}"</span>
+                      <span>Nenhum produto encontrado para "{queryInput}"</span>
                     </div>
                   )}
                 </motion.div>
@@ -135,7 +151,7 @@ export function SearchModal({ isOpen, onClose, onProductSelect }: { isOpen: bool
                       <div 
                         key={idx}
                         onClick={() => {
-                          setQuery(search);
+                          setQueryInput(search);
                           setTimeout(() => inputRef.current?.focus(), 50);
                         }}
                         className="flex items-center gap-4 p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors group/item"
