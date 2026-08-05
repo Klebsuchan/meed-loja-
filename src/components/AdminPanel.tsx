@@ -5,7 +5,7 @@ import { Trash2, Plus, Edit2, Image as ImageIcon, Package } from 'lucide-react';
 import { useAuth } from '../AuthContext';
 
 export function AdminPanel() {
-  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'coupons' | 'marketing' | 'premium'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'coupons' | 'marketing' | 'premium' | 'settings'>('products');
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [coupons, setCoupons] = useState<any[]>([]);
@@ -318,12 +318,23 @@ export function AdminPanel() {
             className="bg-black/50 border border-white/10 p-4 rounded-lg text-white text-center tracking-widest focus:outline-none focus:border-[#dd711c] transition-colors"
             value={password}
             onChange={e => setPassword(e.target.value)}
-            onKeyDown={e => {
+            
+            onKeyDown={async e => {
               if (e.key === 'Enter') {
-                if (password === 'meed123online') setIsAuthenticated(true);
+                const settingsRef = doc(db, 'settings', 'admin');
+                const snap = await getDoc(settingsRef);
+                let expectedPassword = 'meed123online';
+                if (snap.exists()) {
+                  expectedPassword = snap.data().password || 'meed123online';
+                } else {
+                  await setDoc(settingsRef, { password: 'meed123online' });
+                }
+                
+                if (password === expectedPassword) setIsAuthenticated(true);
                 else { const el = document.getElementById('pwd-error'); if(el) el.innerText = 'Senha incorreta'; }
               }
             }}
+
           />
           <button 
             onClick={() => {
@@ -362,17 +373,60 @@ export function AdminPanel() {
           >
             Cupons
           </button>
+          
+          
           <button 
             onClick={() => { setActiveTab('marketing'); setIsAdding(false); }} 
             className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors ${activeTab === 'marketing' ? 'bg-[#dd711c] text-white' : 'text-gray-400 hover:text-white'}`}
           >
             Marketing
           </button>
+
+          <button 
+            onClick={() => { setActiveTab('settings'); setIsAdding(false); }} 
+            className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors ${activeTab === 'settings' ? 'bg-[#dd711c] text-white' : 'text-gray-400 hover:text-white'}`}
+          >
+            Config
+          </button>
+
+
+          <button 
+            onClick={() => { setActiveTab('settings'); setIsAdding(false); }} 
+            className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors ${activeTab === 'settings' ? 'bg-[#dd711c] text-white' : 'text-gray-400 hover:text-white'}`}
+          >
+            Config
+          </button>
+
         </div>
       </div>
 
       {loading ? (
         <div className="text-center py-20 text-gray-400 font-bold uppercase tracking-widest">Carregando dados...</div>
+      ) : activeTab === 'settings' ? (
+        <div className="flex flex-col gap-6">
+          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
+            <h2 className="text-xl font-bold text-white tracking-widest uppercase mb-6">Configurações do Sistema</h2>
+            <div className="max-w-md">
+              <h3 className="text-md font-bold mb-2 text-white">Senha do Painel de Controle</h3>
+              <p className="text-sm text-gray-400 mb-4">Esta senha é compartilhada para acesso ao painel de administrador. Alterar a senha afetará todos os dispositivos.</p>
+              <input id="new-pwd-input" type="password" placeholder="Nova Senha" className="w-full bg-black/50 border border-white/10 p-4 rounded-lg text-white outline-none focus:border-[#dd711c] mb-4" />
+              <button onClick={async () => {
+                const val = (document.getElementById('new-pwd-input') as HTMLInputElement).value;
+                if (!val) return alert('Digite uma senha válida.');
+                try {
+                  await updateDoc(doc(db, 'settings', 'admin'), { password: val });
+                  alert('Senha alterada com sucesso! Todos os usuários deverão usar a nova senha no próximo login.');
+                  (document.getElementById('new-pwd-input') as HTMLInputElement).value = '';
+                } catch (e) {
+                  alert('Erro ao atualizar a senha.');
+                  console.error(e);
+                }
+              }} className="bg-[#dd711c] hover:bg-orange-600 transition-colors text-white py-3 px-6 rounded-lg font-bold uppercase tracking-widest">
+                Salvar Nova Senha
+              </button>
+            </div>
+          </div>
+        </div>
       ) : activeTab === 'products' ? (
         <>
           <div className="flex justify-end mb-6">
@@ -418,7 +472,7 @@ export function AdminPanel() {
                 <img loading="lazy" src={product.image || '/logomeed.png'} alt={product.name} className="w-20 h-20 object-cover rounded-lg bg-black shrink-0" />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-white text-sm leading-tight truncate">{product.name}</h3>
-                  <p className="text-[#dd711c] font-mono font-bold text-sm mt-1">R$ {product.price?.toFixed(2).replace('.', ',')}</p>
+                  <p className="text-[#dd711c] font-mono font-bold text-sm mt-1">R$ {typeof product.price === 'number' ? product.price.toFixed(2).replace('.', ',') : product.price}</p>
                   <p className="text-xs text-gray-400 mt-1">{product.category}</p>
                 </div>
                 <div className="flex gap-2 shrink-0 h-fit">

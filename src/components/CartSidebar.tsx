@@ -84,7 +84,7 @@ export function CartSidebar() {
       const message = `*Novo Pedido - Meed Loja*\n\n*Cliente:*\nNome: ${formData.name}\nCPF: ${formData.cpf}\n\n*Forma de Entrega:*\n${deliveryText}\n\n*Itens:*\n${itemsText}${couponText}\n\n*Total:* R$ ${finalTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       
       const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/5511964486759?text=${encodedMessage}`;
+      const whatsappUrl = `https://wa.me/5554993229840?text=${encodedMessage}`;
       
       window.open(whatsappUrl, '_blank');
       
